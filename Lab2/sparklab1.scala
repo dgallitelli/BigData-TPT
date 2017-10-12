@@ -23,7 +23,7 @@ val hashtagsRDD = initRDD.flatMap(_.toLowerCase.split(" "))
                           .filter(_.startsWith("#"))
                           .map(cleanHashtags(_))
                           .map(word => (word,1)).reduceByKey((a,b) => a+b)
-						  
+
 // Select 10 most frequent
 val tenMostFreqRDD = hashtagsRDD.sortBy(_._2, false).take(10).foreach(println)
 
@@ -49,7 +49,7 @@ def getMonth(input: String) : String = {
     case "Feb" => return "02"
     case "Mar" => return "03"
     case "Apr" => return "04"
-    case "May" => return "05"    
+    case "May" => return "05"
     case "Jun" => return "06"
     case "Jul" => return "07"
     case "Aug" => return "08"
@@ -85,17 +85,6 @@ val step4RDD = step3RDD.filter(_._2 >= minMention).map({
   case (x,y) => {
     // x = (hashtag, period) - y = frequency
     (x._2, (x._1, y))
+    // x = period - y = (hashtag, frequency)
   }
-}).sortByKey().groupByKey().map({
-  case (x,y) => {
-    var myMin = 99999;
-    var myHT = "";
-    for (el <- y){
-      if (myMin > el._2){
-        myMin = el._2
-        myHT = el._1
-      }
-    }
-    (x, (myHT, myMin))
-  }
-}).take(100).foreach(println)
+}).sortByKey().groupByKey().take(100).foreach(println)
